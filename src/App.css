@@ -1,0 +1,21 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+#header{
+ position: relative;
+ top: 1%;
+}
+
+#header::before{
+  content: '';
+  top:1%;
+position: absolute;
+  width: 120%;
+  height: 120%;
+    background: salmon;
+    z-index: 1;
+}
