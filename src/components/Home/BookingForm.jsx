@@ -27,12 +27,12 @@ import { SERVER } from '../../GlobalFunctions';
 import toast from 'react-hot-toast';
 
 
-const BookingForm = () => {
+const BookingForm = ({propmessage,onClose}) => {
   const [formData, setFormData] = useState({
       full_name: "",
       email: "",
       contact_address: "",
-      message: "",
+      message: propmessage? propmessage: "",
       time_slot: "",
     });
 
@@ -111,40 +111,14 @@ toast.error(`${formData.email} is not an valid email`)
       time_slot: ""});
 
       setLoading(false);
+
+      if(onClose)
+            onClose();
   
     };
-  return (
-    <Flex
-      direction={{ base: 'column', md: 'row' }}
-      bgGradient="linear(to-r, pink.500, purple.600)"
-      minH="100vh"
-      p={10}
-      color="white"
-      position={'relative'}
-      bg="black"  
-      id="BookingForm"
-    >
-      {/* Left Section */}
-      <Box flex={1} p={10}>
-        <Heading as="h1" size="2xl" mb={4}>
-          Join Our Teams To Make Community Big
-        </Heading>
-        <Text fontSize="lg" opacity={0.8}>
-          Here you can book your slot to communicate with us, and we will reach out to you under 48 hour.
-        </Text>
+  return (    
 
-        
-      </Box>
-
-      {/* Right Section - Form */}
-      <Box
-        flex={1}
-        bg="white"
-        borderRadius="lg"
-        p={8}
-        color="black"
-        boxShadow="lg"
-      >
+     
            <VStack>
               <form onSubmit={handleSubmit} style={{ minWidth: "100%" }}>
                 <FormInput
@@ -162,14 +136,26 @@ toast.error(`${formData.email} is not an valid email`)
 
                 <FormInput type={'email'} label={'Enter Email'} icon={<AiOutlineMail />} name='email' id='email' placeholder={'johndoe23@gmail.com'} value={formData.email} handleChange={handleOnChange} minlen={5} maxlen={120} />
 
+                <FormControl isRequired width={'full'}>
+                
+                <FormLabel>Enter Your Contact Details</FormLabel>
+
 
 <PhoneInput
   country={'us'}
   value={formData.contact_address}
   onChange={handlePhoneChange}
   name="contact_address"
+   inputStyle={{
+      width: '100%',
+      height: '45px',
+      borderRadius: '8px',
+      border: '1px solid #E2E8F0',
+      paddingLeft: '48px',
+    }}
 />
 
+</FormControl>
               <FormInputTextArea
                                 label={"Enter Your Concern"}
                                 name="message"
@@ -198,8 +184,7 @@ toast.error(`${formData.email} is not an valid email`)
                 </Box>
               </form>
             </VStack>
-      </Box>
-    </Flex>
+    
   );
 };
 

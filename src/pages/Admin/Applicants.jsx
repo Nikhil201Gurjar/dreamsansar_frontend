@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleDeleteApplicant, handleFetchApplicants } from "../../store/ApplicantSlice";
 import {handleFetchCareerPosts} from '../../store/CareerPostsSlice'
 import toast from "react-hot-toast";
+import { Helmet } from "react-helmet-async";
 
 const Applicants = () => {
 
@@ -76,6 +77,28 @@ const Applicants = () => {
 
   return (
     <>
+     <Helmet>
+            <title>Applicant | DreamSansar Consultancy</title>
+            <meta
+              name="description"
+              content="DreamSansar Consultancy helps Nepali students with Ausbildung in Germany, Study in Europe & UK, FSJ, Au Pair, and German Language courses. "
+            />
+            <meta
+              name="keywords"
+              content="Ausbildung in Germany, Study in Germany, Nepali students, German language courses, visa support, DreamSansar Consultancy,career"
+            />
+            <meta property="og:title" content="Applicant | DreamSansar Consultancy" />
+            <meta
+              property="og:description"
+              content="Start your Ausbildung journey in Germany with DreamSansar Consultancy. Get expert visa help, placement, and training."
+            />
+            <meta
+              property="og:image"
+              content="https://dreamsansar.com/images/og-ausbildung.jpg"
+            />
+            <meta property="og:url" content="https://dreamsansar.com/admin/applicant" />
+          </Helmet>
+
     <AdminLayout >
         <section id="Applicants">
 

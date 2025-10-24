@@ -23,6 +23,7 @@ import AdminLayout from "../../components/Admin/AdminLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { handleDeleteBooking, handleFetchBookings } from "../../store/BookingSlice";
 import toast from "react-hot-toast";
+import { Helmet } from "react-helmet-async";
 
 const Bookings = () => {
   const dispatch = useDispatch();
@@ -51,6 +52,27 @@ const Bookings = () => {
 
   return (
     <>
+     <Helmet>
+            <title>Bookings | DreamSansar Consultancy</title>
+            <meta
+              name="description"
+              content="DreamSansar Consultancy helps Nepali students with Ausbildung in Germany, Study in Europe & UK, FSJ, Au Pair, and German Language courses. "
+            />
+            <meta
+              name="keywords"
+              content="Ausbildung in Germany, Study in Germany, Nepali students, German language courses, visa support, DreamSansar Consultancy,career"
+            />
+            <meta property="og:title" content="Bookings | DreamSansar Consultancy" />
+            <meta
+              property="og:description"
+              content="Start your Ausbildung journey in Germany with DreamSansar Consultancy. Get expert visa help, placement, and training."
+            />
+            <meta
+              property="og:image"
+              content="https://dreamsansar.com/images/og-ausbildung.jpg"
+            />
+            <meta property="og:url" content="https://dreamsansar.com/admin/bookings" />
+          </Helmet>
     <AdminLayout >
         <section id="Booking">
     <Box p={6} bg="gray.50" minH="100vh" style={{overflow:'scroll'}} >
@@ -83,7 +105,7 @@ const Bookings = () => {
                 <Tr key={i}>
                   <Td>{booking?.full_name}</Td>
                   <Td>{booking?.email}</Td>
-                  <Td>{booking?.contact_address?.country_code}{booking?.contact_address?.phone_no} </Td>
+                  <Td>{booking?.contact_address} </Td>
                   <Td>{booking?.message}</Td>
                   <Td>{booking?.time_slot}</Td>
                   <Td>

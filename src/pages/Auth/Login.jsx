@@ -28,8 +28,9 @@ import FormInput from '../../components/FormInput'
 import TextHighlight from '../../components/TextHighlight'
 import Buttons from '../../components/Buttons'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUser, handleLoginUser } from '../../store/UserSlice'
+import { getUser, handleClearState, handleLoginUser } from '../../store/UserSlice'
 import toast from 'react-hot-toast'
+import { Helmet } from 'react-helmet-async'
 
 
 const Login = () => {
@@ -37,13 +38,9 @@ const Login = () => {
     const navigate = useNavigate();
 
       //------------------ Store specific stuff
-    const { loading } = useSelector(state => state.user);
+    const { loading,success,msg } = useSelector(state => state.user);
 
-    useEffect(()=>{
-        const token = localStorage.getItem('token');
-        if(token)
-            navigate('/admin/dashboard');
-    },[dispatch])
+    
 
     //------------------ Form Specific Stuff ----------------
     const [formData, setFormData] = useState({
@@ -71,12 +68,44 @@ const Login = () => {
         }
 
         await dispatch(handleLoginUser(formData));
-        setFormData({ email: '', password: '' });
 
+        if(success === false && msg !== null) toast.error(msg);
+
+        dispatch(handleClearState());
+
+        setFormData({ email: '', password: '' });
     }
+    useEffect(()=>{
+        const token = localStorage.getItem('token');
+        if(token)
+            navigate('/admin/dashboard');
+    },[dispatch,handleSubmit])
 
     return (
         <>
+
+          <Helmet>
+        <title>Login | DreamSansar Consultancy</title>
+        <meta
+          name="description"
+          content="DreamSansar Consultancy helps Nepali students with Ausbildung in Germany, Study in Europe & UK, FSJ, Au Pair, and German Language courses. "
+        />
+        <meta
+          name="keywords"
+          content="Ausbildung in Germany, Study in Germany, Nepali students, German language courses, visa support, DreamSansar Consultancy"
+        />
+        <meta property="og:title" content="Login | DreamSansar Consultancy" />
+        <meta
+          property="og:description"
+          content="Start your Ausbildung journey in Germany with DreamSansar Consultancy. Get expert visa help, placement, and training."
+        />
+        <meta
+          property="og:image"
+          content="https://dreamsansar.com/images/og-ausbildung.jpg"
+        />
+        <meta property="og:url" content="https://dreamsansar.com" />
+      </Helmet>
+
             <section id="Login">
 
                 <Container minH={'container.sm'} my={'5'}>

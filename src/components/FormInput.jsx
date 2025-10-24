@@ -72,6 +72,13 @@ export const FormInputSelect = ({ label, icon, type, placeholder, minlen, maxlen
 
 
 export const FormInputSelectCountry = ({ label, icon, type, placeholder, minlen, maxlen, name, value, handleChange, my = '4', css,options,isRequired=true,isDisabled=false }) => {
+    
+     // Local handler to extract full country object
+  const onSelectChange = (e) => {
+    const isoCode = e.target.value;
+    const selectedCountry = options.find(opt => opt.isoCode === isoCode);
+    handleChange(selectedCountry, isoCode); // Pass both country object and isoCode
+  };
 
     return (
         <>
@@ -83,7 +90,7 @@ export const FormInputSelectCountry = ({ label, icon, type, placeholder, minlen,
 
                     <InputLeftElement pointerEvents='none'> {icon} </InputLeftElement>
 
-                    <Select onChange={handleChange} name={name} value={value} isRequired={isRequired} placeholder={placeholder}>
+                    <Select onChange={onSelectChange} name={name} value={value?.isoCode} isRequired={isRequired} placeholder={placeholder}>
                         {options && options?.map((option) => (
                         <option key={option?.isoCode} value={option?.isoCode}>{option?.name}</option>
                         ))}

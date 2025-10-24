@@ -1,48 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, VStack, HStack, Text, SimpleGrid } from '@chakra-ui/react';
 import { FaStar } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import {toast} from 'react-hot-toast'
+import { SERVER } from '../../GlobalFunctions';
 
-// Sample testimonial data
-const testimonials = [
-  {
-    name: "Emily Johnson",
-    role: "Graphic Designer",
-    message:
-      "Absolutely thrilled with the quality and variety of Webflow templates offered by 128 Digital! Highly recommend it for anyone looking to elevate their web design game.",
-    rating: 5,
-  },
-  {
-    name: "Andrew Carter",
-    role: "Freelance Developer",
-    message:
-      "I can't say enough good things about 128 Digital. Their templates have helped me create a professional online presence for my business.",
-    rating: 5,
-  },
-  {
-    name: "Sarah Thompson",
-    role: "UX/UI Designer",
-    message:
-      "As a musician, I appreciate the variety of templates available on 128 Digital. They've helped me create stunning promotional materials for my music. Thank you!",
-    rating: 5,
-  },
-  {
-    name: "Jennifer White",
-    role: "Consultant",
-    message:
-      "The templates from 128 Digital are a lifesaver for busy professionals like me. They're easy to customize and helped me launch my website quickly without compromising on quality.",
-    rating: 5,
-  },
-  {
-    name: "Samantha Miller",
-    role: "Web Designer",
-    message:
-      "I've been using templates from 128 Digital to showcase my photography portfolio, and I've received nothing but compliments. Great work!",
-    rating: 5,
-  },
-  // Add more testimonials here...
-];
 
-const TestimonialCard = ({ testimonial }) => (
+const TestimonialCard = ({testimonial}) => {
+  
+    
+
+  return (
+
+
+
   <Box
     borderWidth="1px"
     borderRadius="lg"
@@ -50,6 +22,7 @@ const TestimonialCard = ({ testimonial }) => (
     shadow="md"
     bg="white"
     textAlign="center"
+     data-aos="zoom-in"
   >
     <HStack justify="center" mb={3}>
       {[...Array(testimonial.rating)].map((_, i) => (
@@ -57,29 +30,58 @@ const TestimonialCard = ({ testimonial }) => (
       ))}
     </HStack>
     <Text fontStyle="italic" mb={4}>
-      "{testimonial.message}"
+      "{testimonial?.user_concern}"
     </Text>
     <VStack spacing={0}>
-      <Text fontWeight="bold">{testimonial.name}</Text>
-      <Text color="gray.500" fontSize="sm">
-        {testimonial.role}
-      </Text>
+      <Text fontWeight="bold">{testimonial?.user_name}</Text>
     </VStack>
   </Box>
-);
+)}
 
-const Testimonials = () => (
-  <VStack spacing={10} p={10} bg="gray.50">
+const Testimonials = () => {  
+  const [testimonails,setTestimonails] = useState([])
+
+  const fetchTestimonails = async () => {
+    try {
+    const url = `${SERVER}/testimonial/allTestimonial`;
+    const options = {
+      headers: {
+      "Access-Control-Allow-Origin": "*"} };
+
+    const res = await fetch(url, options);
+    const data = await res.json();
+
+    console.log('data',data);
+
+    if (data.success === true) {
+      setTestimonails( data?.testimonials);
+    } else toast.error(data?.msg);
+  } catch (error) {
+    toast.error(error);
+  }
+
+  }
+
+  useEffect(()=>{
+    fetchTestimonails();
+  },[])
+
+ 
+  return (
+
+ 
+  <VStack spacing={10} p={10} bg="white">
     <Text fontSize="3xl" fontWeight="bold">
       What Others Say About Us
     </Text>
 
     <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={6} w="full">
-      {testimonials.map((testimonial, index) => (
+      {testimonails?.map((testimonial, index) => (
         <TestimonialCard key={index} testimonial={testimonial} />
       ))}
     </SimpleGrid>
   </VStack>
-);
+ )
+}
 
 export default Testimonials;

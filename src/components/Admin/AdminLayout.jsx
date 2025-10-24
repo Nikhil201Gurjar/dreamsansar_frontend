@@ -21,7 +21,7 @@ const AdminLayout = ({children}) => {
 
         {/* <Navbar/> */}
 
-        <Grid templateColumns={['1fr','1fr 6fr']} >
+        <Grid templateColumns={['1fr',`1fr`,'1fr 6fr']} >
             
             {/* Sidebar show for navigation  */}
             <Sidebar />

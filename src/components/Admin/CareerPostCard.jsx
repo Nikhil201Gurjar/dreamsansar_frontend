@@ -82,6 +82,7 @@ if(!_id){
       borderRadius="2xl"
       boxShadow="xl"
       overflow="hidden"
+      m={'3'}
       transition="all 0.3s"
       _hover={{ transform: "translateY(-5px)", boxShadow: "2xl" }}
       position="relative"

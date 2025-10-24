@@ -3,86 +3,85 @@ import {
   Container,
   Stack,
   Text,
-  Link,
   SimpleGrid,
   Icon,
   Flex,
+  Divider,
 } from "@chakra-ui/react";
 import { FaFacebook, FaInstagram, FaYoutube, FaXTwitter } from "react-icons/fa6";
 import { FiPhone, FiMail, FiMapPin } from "react-icons/fi";
 import { FaTiktok } from "react-icons/fa6";
 import { FaLinkedinIn } from "react-icons/fa6";
+import { Link, useLocation } from "react-router-dom";
 
 
 export default function Footer() {
+  const location = useLocation();
+
   return (
     <Box bg="black" color="white" py={10}>
       <Container maxW="7xl">
-        <SimpleGrid columns={{ base: 1, md: 4 }} spacing={10}>
+        <SimpleGrid columns={{ base: 1, md: 4 }} dreamsansarcing={10}>
           {/* Logo + About + Social */}
-          <Stack spacing={4}>
+          <Stack dreamsansarcing={4}>
             <Flex align="center" gap={2}>
-              <Text fontSize="2xl" fontWeight="bold">
+              <Link to='/' className="hover" >
+              <Text fontSize="2xl" fontWeight="bold" cursor={'pointer'}>
                 ⚡ DreamSansar
               </Text>
+              </Link>
             </Flex>
             <Text fontSize="sm" color="gray.300">
               Licensed, insured, and trusted since 2025.
             </Text>
             <Flex gap={4} mt={2}>
-              <Link href="#">
-                <Icon as={FaFacebook} boxSize={5} />
+              <Link to="#">
+                <Icon as={FaFacebook} boxSize={5} _hover={{color:"orange.400"}}/>
               </Link>
-              <Link href="#">
-                <Icon as={FaInstagram} boxSize={5} />
+              <Link to="#">
+                <Icon as={FaInstagram} boxSize={5} _hover={{color:"orange.400"}} />
               </Link>
-              <Link href="#">
-                <Icon as={FaTiktok} boxSize={5} />
+              <Link to="#">
+                <Icon as={FaTiktok} boxSize={5} _hover={{color:"orange.400"}}/>
               </Link>
-              <Link href="#">
-                <Icon as={FaLinkedinIn} boxSize={5} />
+              <Link to="#">
+                <Icon as={FaLinkedinIn} boxSize={5} _hover={{color:"orange.400"}}/>
               </Link>
             </Flex>
           </Stack>
 
+<Divider display={['block','block','none']}  my={'3'}/>
           {/* Services */}
-          <Stack spacing={3}>
+          <Stack dreamsansarcing={3}>
             <Text fontWeight="bold" fontSize="lg">
               Our Services
-            </Text>
-           
+            </Text>           
 
-
-
-
-
-
-            <Link href="#"> Ausbildung in Germany</Link>
-            <Link href="#">Study in Germany</Link>
-            <Link href="#">Study in UK & Europe</Link>
-            <Link href="#">Work Visa – Nursing (Germany)</Link>
-            <Link href="#">Au Pair (DE / AT / CH / NL)</Link>
-            <Link href="#">FSJ in Germany (Only)</Link>
-            <Link href="#">German Language A1–B2</Link>
+            <Link to="/services/ausbildung-in-germany" className="hover" style={{color:`${location.pathname === '/services/ausbildung-in-germany' ? 'salmon': ''}`}}> Ausbildung in Germany</Link>
+            <Link to="/services/study-in-europe-uk" className="hover" style={{color:`${location.pathname === '/services/study-in-europe-uk' ? 'salmon': ''}`}}>Study in Europe & UK</Link>
+            <Link to="/services/au-pair-in-europe" className="hover" style={{color:`${location.pathname === '/services/au-pair-in-europe' ? 'salmon': ''}`}}>Au Pair in Europe</Link>
+            <Link to="/services/fsj-in-germany" className="hover" style={{color:`${location.pathname === '/services/fsj-in-germany' ? 'salmon': ''}`}}>FSJ in Germany</Link>
+            <Link to="/services/german-language-a1-b2" className="hover" style={{color:`${location.pathname === '/services/german-language-a1-b2' ? 'salmon': ''}`}}>German Language A1–B2</Link>
 
           </Stack>
+<Divider display={['block','block','none']}  my={'3'}/>
 
           {/* Quick Links */}
-          <Stack spacing={3}>
+          <Stack dreamsansarcing={3}>
             <Text fontWeight="bold" fontSize="lg">
               Quick Links
             </Text>
-            <Link href="#" color="orange.400">
+            <Link to="/" className="hover" style={{color:`${location.pathname === '/' ? 'salmon': ''}`}}>
               Home
             </Link>
-            <Link href="#">Services</Link>
-            <Link href="#">Careers</Link>
-            <Link href="#">Testimonials</Link>
-            <Link href="#">Book a slot</Link>
+             <Link to="/about_us" className="hover" style={{color:`${location.pathname === '/about_us' ? 'salmon': ''}`}}>About Us</Link>
+            <Link to="/careers" className="hover" style={{color:`${location.pathname === '/careers' ? 'salmon': ''}`}}>Careers</Link>
+           
           </Stack>
+<Divider display={['block','block','none']} my={'3'}/>
 
           {/* Contact Us */}
-          <Stack spacing={4}>
+          <Stack dreamsansarcing={4}>
             <Text fontWeight="bold" fontSize="lg">
               Contact Us
             </Text>
@@ -99,8 +98,10 @@ export default function Footer() {
                 <Icon as={FiPhone} boxSize={5} />
               </Box>
               <Box>
+                <a href="tel:+23442343423">
                 <Text fontWeight="600">Call us</Text>
-                <Text fontSize="sm">(555) 123-4567</Text>
+                <Text fontSize="sm">+2340234803</Text>
+                </a>
               </Box>
             </Flex>
 
@@ -116,8 +117,10 @@ export default function Footer() {
                 <Icon as={FiMail} boxSize={5} />
               </Box>
               <Box>
+                <a href="mailto:info@dreamsansar.com">
                 <Text fontWeight="600">Send Email</Text>
-                <Text fontSize="sm">info@spa.com</Text>
+                <Text fontSize="sm">info@dreamsansar.com</Text>
+                </a>
               </Box>
             </Flex>
 
@@ -146,7 +149,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <Flex
-          justify="space-between"
+          justify="dreamsansarce-between"
           align="center"
           borderTop="1px solid"
           borderColor="gray.700"

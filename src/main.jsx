@@ -9,17 +9,24 @@ import {Provider} from 'react-redux'
 import store from './store/Store'
 import { BrowserRouter } from 'react-router-dom'
 
+import { HelmetProvider } from "react-helmet-async";
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+  <HelmetProvider>
+
  <ChakraProvider>
 <Provider store={store}>
       <BrowserRouter>
+      
     <App />
-      </BrowserRouter>
 
+      </BrowserRouter>
 </Provider>
 
  </ChakraProvider>
+ 
+</HelmetProvider>
 
   </StrictMode>,
 )

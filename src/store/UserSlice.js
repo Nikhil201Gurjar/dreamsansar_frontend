@@ -180,12 +180,18 @@ const UserSlice = createSlice({
             state.loading = null;
             state.success = null;
             state.msg = null;
+        },
+
+        clearUserState(state){
+                state.loading = null;
+                state.success = null;
+                state.msg = null;
         }
 
     }
 });
 
-export const { loginUser, loginUserError, loginUserRequest, clearUserError, setUser, logoutUser, getUserError, getUserRequest, registerUser, registerUserError, registerUserRequest, updateProfile, updateUserPassword, updateUserPasswordError, updateUserPasswordRequest, updateProfilePicture, courseAddToPlaylist, courseAddToPlaylistError, courseAddToPlaylistRequest, courseRemoveToPlaylist, courseRemoveToPlaylistError, courseRemoveToPlaylistRequest, fetchUserCoursePlaylist, fetchUserCoursePlaylistError, fetchUserCoursePlaylistRequest, removeCourseToPlaylist, subscribe, subscribeError, subscribeRequest, cancelSubscription, cancelSubscriptionError, cancelSubscriptionRequest } = UserSlice.actions;
+export const { loginUser, loginUserError, loginUserRequest, clearUserError, setUser, logoutUser, getUserError, getUserRequest, registerUser, registerUserError, registerUserRequest, updateProfile, updateUserPassword, updateUserPasswordError, updateUserPasswordRequest, updateProfilePicture, courseAddToPlaylist, courseAddToPlaylistError, courseAddToPlaylistRequest, courseRemoveToPlaylist, courseRemoveToPlaylistError, courseRemoveToPlaylistRequest, fetchUserCoursePlaylist, fetchUserCoursePlaylistError, fetchUserCoursePlaylistRequest, removeCourseToPlaylist, subscribe, subscribeError, subscribeRequest, cancelSubscription, cancelSubscriptionError, cancelSubscriptionRequest,clearUserState } = UserSlice.actions;
 export default UserSlice.reducer;
 
 
@@ -195,17 +201,23 @@ export const handleLoginUser = (formData) => async dispatch => {
 
     dispatch(loginUserRequest());
 
+    console.log('formdata',formData)
+
     try {
         const url = `${SERVER}/auth/login`;
         const options = {
             method: 'POST',
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                
+      "Access-Control-Allow-Origin": "*"
             },
             body: JSON.stringify(formData)
         };
         const res = await fetch(url, options);
         const data = await res.json();
+
+        console.log('data',data);
 
         if (data.success === true) {
             dispatch(loginUser({ token: data.token, msg: data.msg }));
@@ -433,4 +445,8 @@ export const handleCancelSubscription = () => async dispatch => {
     } catch (error) {
         dispatch(cancelSubscriptionError(error));
     }
+}
+
+export const handleClearState = () => dispatch => {
+    dispatch(clearUserState());
 }

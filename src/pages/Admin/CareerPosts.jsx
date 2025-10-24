@@ -16,7 +16,7 @@ import {
   InputLeftElement,
   useToast,
   SimpleGrid,
-   Modal,
+  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -25,10 +25,10 @@ import {
   ModalCloseButton,
   useDisclosure,
   Heading,
-   VStack,
-   Avatar,
-   Image,
-   Divider
+  VStack,
+  Avatar,
+  Image,
+  Divider,
 } from "@chakra-ui/react";
 import { FaTrash, FaEdit, FaSearch } from "react-icons/fa";
 import AdminLayout from "../../components/Admin/AdminLayout";
@@ -43,54 +43,77 @@ import Buttons from "../../components/Buttons";
 
 import { FaRegUserCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { handleAddCareerPosts, handleFetchCareerPosts, handleIncreaseCareerPosts } from "../../store/CareerPostsSlice";
+import {
+  handleAddCareerPosts,
+  handleFetchCareerPosts,
+  handleIncreaseCareerPosts,
+} from "../../store/CareerPostsSlice";
 import Loading from "../../components/Loading";
 import toast from "react-hot-toast";
 
-import header2 from '../../assets/header2.jpg'
+import header2 from "../../assets/header2.jpg";
+import { Helmet } from "react-helmet-async";
 
 const CareerPosts = () => {
   //----------------Use dispatch --------------
-  const {careerposts,loading} = useSelector(state => state.careerposts);
+  const { careerposts, loading } = useSelector((state) => state.careerposts);
   const dispatch = useDispatch();
 
-  useEffect(()=>{
-        dispatch(handleFetchCareerPosts());
-
-  },[dispatch])
+  useEffect(() => {
+    dispatch(handleFetchCareerPosts());
+  }, [dispatch]);
 
   const toast = useToast();
-    const [posts, setPosts] = useState(2);
+  const [posts, setPosts] = useState(2);
 
-    
-      const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filter CareerPosts based on name, email, or contact_address (phone)
   const filteredCareerPosts = careerposts.filter((b) =>
-    [b.role, b.role_details]
-      .some((field) => field.toLowerCase().includes(searchQuery.toLowerCase()))
+    [b.role, b.role_details].some((field) =>
+      field.toLowerCase().includes(searchQuery.toLowerCase())
+    )
   );
-
-
-
 
   return (
     <>
-    <AdminLayout  >
-        <section style={{overflow:'hidden'}} id="CareerPosts">
-
-       
-    <Box p={6} bg="gray.50" minH="100vh"  >
-      <HStack justify={"space-between"}>
-      <Heading mb={'3'}>Career Posts</Heading>
-  <Button onClick={onOpen}>Add a Career Post</Button>
-  </HStack>
-  <Divider />
-  <AddCareerPost isOpen={isOpen} onClose={onClose} />
-      {/* 🔍 Search Bar */}
-      {/* <Box mb={6} maxW="400px" 
+      <Helmet>
+        <title>Careers | DreamSansar Consultancy</title>
+        <meta
+          name="description"
+          content="DreamSansar Consultancy helps Nepali students with Ausbildung in Germany, Study in Europe & UK, FSJ, Au Pair, and German Language courses. "
+        />
+        <meta
+          name="keywords"
+          content="Ausbildung in Germany, Study in Germany, Nepali students, German language courses, visa support, DreamSansar Consultancy,career"
+        />
+        <meta property="og:title" content="Careers | DreamSansar Consultancy" />
+        <meta
+          property="og:description"
+          content="Start your Ausbildung journey in Germany with DreamSansar Consultancy. Get expert visa help, placement, and training."
+        />
+        <meta
+          property="og:image"
+          content="https://dreamsansar.com/images/og-ausbildung.jpg"
+        />
+        <meta
+          property="og:url"
+          content="https://dreamsansar.com/admin/careers"
+        />
+      </Helmet>
+      <AdminLayout>
+        <section style={{ overflow: "hidden" }} id="CareerPosts">
+          <Box p={6} bg="gray.50" minH="100vh">
+            <HStack justify={"space-between"}>
+              <Heading mb={"3"}>Career Posts</Heading>
+              <Button onClick={onOpen}>Add a Career Post</Button>
+            </HStack>
+            <Divider />
+            <AddCareerPost isOpen={isOpen} onClose={onClose} />
+            {/* 🔍 Search Bar */}
+            {/* <Box mb={6} maxW="400px" 
  >
         <InputGroup>
           <InputLeftElement pointerEvents="none">
@@ -107,28 +130,36 @@ const CareerPosts = () => {
         </InputGroup>
       </Box> */}
 
-          <Box p={8} bg="gray.50" minH="100vh">
-      <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8}>
-        {loading ? <Loading/> : careerposts?.map((careerposts,i)=>(
-        <CareerPostCard
-          key={i}
-          image={careerposts?.avatar?.url}
-          title={careerposts?.role}
-          description={careerposts?.role_details}
-          qualifications={careerposts?.qualifications}
-          applicants={careerposts?.number_of_applicants}
-          posts={careerposts?.number_of_posts}
-          _id={careerposts?._id}
-        />
-         ))}
-      
-      </SimpleGrid>
-    </Box>
-    </Box>
-     </section>
-    </AdminLayout>
+            <Box w="full" maxW="100%" overflowX="hidden" p={4}>
+              <Box
+                display={"flex"}
+                flexDirection={["column", "column", "row"]}
+                flexWrap="wrap"
+                gap={4}
+                w="100%"
+              >
+                {loading ? (
+                  <Loading />
+                ) : (
+                  careerposts?.map((careerposts, i) => (
+                    <CareerPostCard
+                      key={i}
+                      image={careerposts?.avatar?.url}
+                      title={careerposts?.role}
+                      description={careerposts?.role_details}
+                      qualifications={careerposts?.qualifications}
+                      applicants={careerposts?.number_of_applicants}
+                      posts={careerposts?.number_of_posts}
+                      _id={careerposts?._id}
+                    />
+                  ))
+                )}
+              </Box>
+            </Box>
+          </Box>
+        </section>
+      </AdminLayout>
     </>
-
   );
 };
 
@@ -137,15 +168,15 @@ export default CareerPosts;
 const AddCareerPost = ({ isOpen, onClose }) => {
   const dispatch = useDispatch();
 
-  const {img,success,loading} = useSelector(state => state.careerposts);
+  const { img, success, loading } = useSelector((state) => state.careerposts);
 
   const [formData, setFormData] = useState({
     role: "",
     role_details: "",
-    number_of_posts:0,
-    address:"",
-    qualifications:"",
-    file:""
+    number_of_posts: 0,
+    address: "",
+    qualifications: "",
+    file: "",
   });
 
   //Function to handle the onchange event on input data
@@ -156,65 +187,69 @@ const AddCareerPost = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if(!formData.role_details || !formData.role || !formData.number_of_posts || !formData.address || !formData.qualifications) return toast.error('All fields are required');
+    if (
+      !formData.role_details ||
+      !formData.role ||
+      !formData.number_of_posts ||
+      !formData.address ||
+      !formData.qualifications
+    )
+      return toast.error("All fields are required");
 
-    console.log('CareerPosts',formData);
+    console.log("CareerPosts", formData);
     const formDataToSend = new FormData();
-formDataToSend.append("role", formData.role);
-formDataToSend.append("role_details", formData.role_details);
-formDataToSend.append("number_of_posts", formData.number_of_posts);
-formDataToSend.append("address", formData.address);
-formDataToSend.append("qualifications", formData.qualifications);
-if (formData.file) formDataToSend.append("file", formData.file);
-try {
-  
-    await dispatch(handleAddCareerPosts(formDataToSend));
+    formDataToSend.append("role", formData.role);
+    formDataToSend.append("role_details", formData.role_details);
+    formDataToSend.append("number_of_posts", formData.number_of_posts);
+    formDataToSend.append("address", formData.address);
+    formDataToSend.append("qualifications", formData.qualifications);
+    if (formData.file) formDataToSend.append("file", formData.file);
+    try {
+      await dispatch(handleAddCareerPosts(formDataToSend));
 
-    if(!success) toast.error(msg);
-    else
-    toast.success('Successfully added a new career post');
-} catch (error) {
-  toast.error(error)
-}
+      if (!success) toast.error(msg);
+      else toast.success("Successfully added a new career post");
+    } catch (error) {
+      toast.error(error);
+    }
 
+    setFormData({
+      role: "",
+      role_details: "",
+      number_of_posts: 0,
+      address: "",
+      qualifications: "",
+      file: "",
+    });
 
-    setFormData({ role: "",
-    role_details: "",
-    number_of_posts:0,
-    address:"",
-    qualifications:"",
-    file:""
-  })
-
-  setImgPrev('')
+    setImgPrev("");
   };
 
-  
-    const [imgPrev, setImgPrev] = useState('');
+  const [imgPrev, setImgPrev] = useState("");
 
-   //Function to handle upload image
-    const handleUploadImg = (e) => {
-        const file = e.target.files[0];
-        if(!file) return;
-         const reader = new FileReader();
-        // console.log('reader', reader);
+  //Function to handle upload image
+  const handleUploadImg = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    // console.log('reader', reader);
 
-        reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
 
-        reader.onload = () => {
-            setImgPrev(reader.result)
-        }
-        setFormData({ ...formData, file });
+    reader.onload = () => {
+      setImgPrev(reader.result);
+    };
+    setFormData({ ...formData, file });
 
-                // Define the size of the image
-        const fileSize = file.size / 1e+6; //mb
-        if (fileSize.toFixed(2) > 5) {
-            //Can't upload file size > 5 MB
-            toast.error("Avatar must be less than 5 MB");
-            setFormData({ ...formData, file: '' });
-            return;
-        }
+    // Define the size of the image
+    const fileSize = file.size / 1e6; //mb
+    if (fileSize.toFixed(2) > 5) {
+      //Can't upload file size > 5 MB
+      toast.error("Avatar must be less than 5 MB");
+      setFormData({ ...formData, file: "" });
+      return;
     }
+  };
 
   return (
     <>
@@ -224,10 +259,12 @@ try {
           <ModalHeader>Add Career Post</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-             
-
             <VStack>
-              <form onSubmit={handleSubmit} style={{ minWidth: "100%" }}>
+              <form
+                onSubmit={handleSubmit}
+                style={{ minWidth: "100%" }}
+                enctype="multipart/form-data"
+              >
                 <FormInput
                   type={"text"}
                   label={"Enter Role Name"}
@@ -245,7 +282,9 @@ try {
                   label={"Enter Role Details"}
                   name="role_details"
                   id="role_details"
-                  placeholder={"a person who maintains a household by cleaning, organizing, and often cooking for the residents"}
+                  placeholder={
+                    "a person who maintains a household by cleaning, organizing, and often cooking for the residents"
+                  }
                   value={formData.role_details}
                   handleChange={handleOnChange}
                   minlen={5}
@@ -283,7 +322,6 @@ try {
                   maxlen={120}
                 />
 
-                
                 <FormInput
                   type={"file"}
                   label={"Upload Career Poster"}
@@ -293,15 +331,21 @@ try {
                   handleChange={handleUploadImg}
                 />
 
-                {imgPrev && 
-
-                 <Box>
-                  <Image src={imgPrev} width='full' height={'200px'} border='1 px solid black' borderRadius='12%' />
-                </Box>}
+                {imgPrev && (
+                  <Box>
+                    <Image
+                      src={imgPrev}
+                      width="full"
+                      height={"200px"}
+                      border="1 px solid black"
+                      borderRadius="12%"
+                    />
+                  </Box>
+                )}
 
                 <Box w="full" my="4" mx="auto">
                   <Buttons
-                  isloading={loading}
+                    isloading={loading}
                     handleClick={handleSubmit}
                     type="submit"
                     mx="auto"
@@ -326,13 +370,13 @@ try {
 };
 
 export const FileUpload = {
-    "&::file-selector-button": {
-        cursor: 'pointer',
-        marginLeft: '-5%',
-        color: 'salmon',
-        border: 'none',
-        height: '100%',
-        background: 'transparent',
-        width: '110%'
-    }
-}
+  "&::file-selector-button": {
+    cursor: "pointer",
+    marginLeft: "-5%",
+    color: "salmon",
+    border: "none",
+    height: "100%",
+    background: "transparent",
+    width: "110%",
+  },
+};

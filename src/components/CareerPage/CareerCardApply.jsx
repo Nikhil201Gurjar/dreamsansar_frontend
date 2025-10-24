@@ -24,7 +24,7 @@ import {
   FormControl,
   FormLabel,
 } from "@chakra-ui/react";
-import 'react-phone-input-2/lib/style.css'
+import "react-phone-input-2/lib/style.css";
 
 import { Country, State, City } from "country-state-city";
 
@@ -40,9 +40,15 @@ import {
 } from "../../store/CareerPostsSlice";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
-import FormInput, { FormInputSelect, FormInputSelectCity, FormInputSelectCountry, FormInputTextArea } from "../FormInput";
+import FormInput, {
+  FormInputSelect,
+  FormInputSelectCity,
+  FormInputSelectCountry,
+  FormInputTextArea,
+} from "../FormInput";
 import TextHighlight from "../TextHighlight";
 import PhoneInput from "react-phone-input-2";
+import { SERVER } from "../../GlobalFunctions";
 
 const CareerCardApply = ({
   image,
@@ -113,16 +119,14 @@ const CareerCardApply = ({
             </Text>
           </Box>
 
-          <HStack justify="space-between" w="full" pt={3}>
-            <Link to={`/admin/applicants?role=${_id}`}>
+          {/* <HStack justify="space-between" w="full" pt={3}>
               <Badge colorScheme="blue" fontSize="0.8em" borderRadius="md">
                 Applicants: {applicants}
               </Badge>
-            </Link>
             <Badge colorScheme="green" fontSize="0.8em" borderRadius="md">
               Posts: {posts}
             </Badge>
-          </HStack>
+          </HStack> */}
         </Box>
         <Spacer /> {/* <- pushes buttons to the bottom */}
         <Buttons handleClick={onOpen} title="Apply" mx="auto" width={"full"} />
@@ -134,82 +138,178 @@ const CareerCardApply = ({
 export default CareerCardApply;
 
 const ApplyCareerPost = ({ isOpen, onClose, title, _id }) => {
-  const loading = false;
+ const [loading,setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     full_name: "",
     contact_address: "",
-    qualifications: 0,
+    qualifications: "",
     email: "",
     address1: "",
     district: "",
-    state:"",
-    country:""
+    state: "",
+    country: "",
   });
 
   //Function to handle the onchange event on input data
   const handleOnChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  const handleClose = () => {
+    setFormData({
+      full_name: "",
+      contact_address: "",
+      qualifications: "",
+      email: "",
+      address1: "",
+      district: "",
+      state: "",
+      country: "",
+    });
+
+
+
+    onClose();
+    
+    setSelectedState(null);
+    setSelectedCountry(null);
+  };
+
+
   //---------- Function to submit the form data or can say login the users
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log('formData',formData);
+    console.log("formData", formData);
+    setLoading(true);
 
     if (
       !formData.full_name ||
       !formData.contact_address ||
       !formData.qualifications ||
       !formData.address1 ||
-      !formData.email || !formData.district || !formData.state || !formData.country
-    )
-      return toast.error("All fields are required");
+      !formData.email ||
+      !formData.district ||
+      !formData.state ||
+      !formData.country
+    ){
+    setLoading(false);
+toast.error("All fields are required");
+      return 
 
+    }
+
+    if(!title){
+       setLoading(false);
+toast.error(`Role: ${title} is not found`);
+      return 
+    }
+
+    if(!_id){
+       setLoading(false);
+toast.error(`Role _id:${_id} is not found`);
+      return 
+    }
+if(!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(formData?.email))){
+  setLoading(false);
+toast.error(`${formData?.email} is not valid email`);
+      return 
+}
+
+if(formData?.address1.length < 7){
+  setLoading(false);
+toast.error(`Kindly write the full address`);
+      return 
+}
+
+if(formData?.qualifications.length < 5){
+  setLoading(false);
+toast.error(`Kindly write the qualifications in detail`);
+      return 
+}
+
+
+    try {
+        const url = `${SERVER}/applicant/apply/${_id}?role=${title}`;
+        const options = {
+          method:'POST',
+          headers:{
+            "Content-Type":"application/json"
+          },
+          body:JSON.stringify(formData)
+         };
     
-
-//     setFormData({
-//      full_name: "",
-//     contact_address: "",
-//     qualifications: 0,
-//     email: "",
-//     address1: "",
-//     district: "",
-//     state:"",
-//     country:""
-//     });
-
-//     onClose();
-
+        const res = await fetch(url, options);
+        const data = await res.json();
     
-// setSelectedState(null)
-// setSelectedCountry(null);
+        console.log('apply',data);
+    
+        if (data.success === true) {
+          toast.success(data?.msg)
+        } else toast.error(data.msg);
+      } catch (error) {
+        toast.error(error);
+      }
+      
+      setLoading(false);
+
+
+    setFormData({
+      full_name: "",
+      contact_address: "",
+      qualifications: "",
+      email: "",
+      address1: "",
+      district: "",
+      state: "",
+      country: "",
+    });
+
+    onClose();
+
+    setSelectedState(null);
+    setSelectedCountry(null);
   };
-
 
   const [countries, setCountries] = useState(Country?.getAllCountries());
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCountry, setSelectedCountry] = useState({name: 'United States', isoCode: 'US', flag: '🇺🇸', phonecode: '1', currency: 'USD'});
+  const [selectedState, setSelectedState] = useState(State.getStatesOfCountry('US'));
 
-  const handleCountryChange = (country) => {
+  const handleCountryChange = (country, isoCode) => {
+    
+    console.log("Selected country:", country);
+    console.log("ISO Code:", isoCode);
     setSelectedCountry(country);
-    setFormData({...formData,country});
+    setFormData({ ...formData, country:country?.name });
     setStates(State.getStatesOfCountry(country?.isoCode));
+    console.log("states", states);
     setCities([]);
+
   };
 
   const handleStateChange = (state) => {
-    setSelectedState(state);
-    setFormData({...formData,state});
+    console.log('state',state,selectedCountry);
+    setSelectedState(state?.name);
+    setFormData({ ...formData, state:state?.name });
 
     setCities(City.getCitiesOfState(selectedCountry?.isoCode, state?.isoCode));
   };
 
-   const handlePhoneChange = (value) => setFormData({...formData,contact_address:value})
-  
+  const handlePhoneChange = (value) => {
+    setFormData({ ...formData, contact_address: value });
+
+    const postIndex = countries.findIndex(
+      (country) => country.phonecode === value
+    );
+    const country = countries[postIndex];
+
+    if (postIndex !== -1 && country) {      
+      handleCountryChange(country,country?.isoCode)
+    }
+  };
 
   return (
     <>
@@ -238,7 +338,7 @@ const ApplyCareerPost = ({ isOpen, onClose, title, _id }) => {
                   maxlen={120}
                 />
 
-                 <FormInput
+                <FormInput
                   type={"email"}
                   label={"Enter Email Address"}
                   icon={<FaRegUserCircle />}
@@ -250,38 +350,33 @@ const ApplyCareerPost = ({ isOpen, onClose, title, _id }) => {
                   minlen={5}
                   maxlen={120}
                 />
-                <FormControl isRequired width={'full'}>
-
-<FormLabel>Enter Your Contact Details</FormLabel>
-                <PhoneInput
-                inputStyle={{
-      width: '100%',
-      height: '45px',
-      borderRadius: '8px',
-      border: '1px solid #E2E8F0',
-      paddingLeft: '48px',
-    }}
-                  country={'us'}
-                  value={formData.contact_address}
-                  onChange={handlePhoneChange}
-                  name="contact_address"
-                />
+                <FormControl isRequired width={"full"}>
+                  <FormLabel>Enter Your Contact Details</FormLabel>
+                  <PhoneInput
+                    inputStyle={{
+                      width: "100%",
+                      height: "45px",
+                      borderRadius: "8px",
+                      border: "1px solid #E2E8F0",
+                      paddingLeft: "48px",
+                    }}
+                    country={"us"}
+                    value={formData.contact_address}
+                    onChange={handlePhoneChange}
+                    name="contact_address"
+                  />
                 </FormControl>
 
                 <FormInputTextArea
                   label={"Enter Qualifications"}
                   name="qualifications"
                   id="qualifications"
-                  placeholder={
-                    "B.tech in Computer Science"
-                  }
+                  placeholder={"B.tech in Computer Science"}
                   value={formData.qualifications}
                   handleChange={handleOnChange}
                   minlen={5}
                   maxlen={120}
                 />
-
-          
 
                 <FormInputTextArea
                   label={"Enter Your Address"}
@@ -294,18 +389,41 @@ const ApplyCareerPost = ({ isOpen, onClose, title, _id }) => {
                   maxlen={120}
                 />
 
+                <FormInputSelectCountry
+                  label={"Select Your Country"}
+                  placeholder={"Select Country"}
+                  underOption={"isoCode"}
+                  options={countries}
+                  name={"country"}
+                  value={selectedCountry}
+                  handleChange={handleCountryChange}
+                />
 
-                <FormInputSelectCountry label={'Select Your Country'} placeholder={'Select Country'} underOption={'isoCode'} options={countries} name={'country'} handleChange={handleCountryChange} />
+                <FormInputSelectCountry
+                  label={"Select Your State"}
+                  isDisabled={!selectedCountry}
+                  placeholder={"Select State"}
+                  underOption={"isoCode"}
+                  options={states}
+                  name={"state"}
+                  handleChange={handleStateChange}
+                />
 
-     <FormInputSelectCountry label={'Select Your State'} isDisabled={!selectedCountry} placeholder={'Select State'} underOption={'isoCode'} options={states} name={'state'} handleChange={handleStateChange} />
-
-         <FormInputSelectCity label={'Select Your District'} isDisabled={!selectedState || !selectedCountry} placeholder={'Select District'} underOption={'name'} options={cities} name={'district'} underOptionName={'name'} handleChange={(e) => {setFormData({...formData,district:e.target.value})}} />
-
-
+                <FormInputSelectCity
+                  label={"Select Your District"}
+                  isDisabled={!selectedState || !selectedCountry}
+                  placeholder={"Select District"}
+                  underOption={"name"}
+                  options={cities}
+                  name={"district"}
+                  underOptionName={"name"}
+                  handleChange={(e) => {
+                    setFormData({ ...formData, district: e.target.value });
+                  }}
+                />
 
                 <div className="container">
                   <div className="row">
-                 
                     {/* <div className="col">
                       <select
                         disabled={!selectedCountry}
@@ -356,7 +474,7 @@ const ApplyCareerPost = ({ isOpen, onClose, title, _id }) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button colorScheme="blue" mr={3} onClick={() => handleClose()}>
               Close
             </Button>
           </ModalFooter>

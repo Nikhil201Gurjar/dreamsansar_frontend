@@ -225,12 +225,10 @@ export const handleAddCareerPosts = (formData) => async dispatch => {
 
         const res = await fetch(url, options);
         const data = await res.json();
-        console.log('data',data)
         const career_post = data?.career_post
 
         if (data.success === true) {
-            console.log('successfully added the career post',data)
-            // dispatch(addCareerPosts({career_post}));
+            dispatch(addCareerPosts({career_post}));
         }
         else dispatch(addCareerPostsError(data?.msg));
 

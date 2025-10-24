@@ -14,7 +14,6 @@ const bookingSlice = createSlice({
     fetchBookings(state, action) {
       state.loading = false;
       state.success = true;
-      state.msg = action.payload.msg;
       state.bookings = action.payload.bookings
       state.length = action.payload.Length
     },
@@ -72,7 +71,7 @@ export const handleFetchBookings = () => async (dispatch) => {
     console.log('data',data);
     if (data.success === true) {
       dispatch(
-        fetchBookings({ bookings: data.bookings, Length: data.Length })
+        fetchBookings({ bookings: data.bookings, Length: data.Lenght })
       );
     } else dispatch(fetchBookingsError(data.msg));
   } catch (error) {

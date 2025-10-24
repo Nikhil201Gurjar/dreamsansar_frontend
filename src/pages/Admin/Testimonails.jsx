@@ -34,12 +34,16 @@ import { FaRegStar } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { handleDispatchAddTestimonail, handleDispatchDeleteTestimonail, handleFetchTestimonails } from "../../store/TestimonailSlice";
+import Loading from "../../components/Loading";
+import { Helmet } from "react-helmet-async";
  
 const Testimonails = () => {
+  console.log('admin testimonail');
+  
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const dispatch = useDispatch();
-  const {testimonails,success,loading} = useSelector(state => state.testimonail);
+  const {testimonails,success,loading,msg} = useSelector(state => state.testimonail);
 
   useEffect(()=>{
     dispatch(handleFetchTestimonails())
@@ -67,6 +71,28 @@ const Testimonails = () => {
 
   return (
     <>
+     <Helmet>
+            <title>Testimonail | DreamSansar Consultancy</title>
+            <meta
+              name="description"
+              content="DreamSansar Consultancy helps Nepali students with Ausbildung in Germany, Study in Europe & UK, FSJ, Au Pair, and German Language courses. "
+            />
+            <meta
+              name="keywords"
+              content="Ausbildung in Germany, Study in Germany, Nepali students, German language courses, visa support, DreamSansar Consultancy,career"
+            />
+            <meta property="og:title" content="Testimonail | DreamSansar Consultancy" />
+            <meta
+              property="og:description"
+              content="Start your Ausbildung journey in Germany with DreamSansar Consultancy. Get expert visa help, placement, and training."
+            />
+            <meta
+              property="og:image"
+              content="https://dreamsansar.com/images/og-ausbildung.jpg"
+            />
+            <meta property="og:url" content="https://dreamsansar.com/admin/testimonail" />
+          </Helmet>
+
       <AdminLayout>
         <section id="Testimonails">
           <HStack justify={"space-between"}>
@@ -79,7 +105,8 @@ const Testimonails = () => {
 
           <Divider my={'2'} />
           <AddTestimonail isOpen={isOpen} onClose={onClose} />
- {testimonails && testimonails?.length !== 0 ? 
+          {loading && <Loading/>}
+ {testimonails && testimonails?.length !== 0 && !loading ? 
           <SimpleGrid
             mt={"5"}
             columns={{ base: 1, md: 2, lg: 3 }}
@@ -163,18 +190,23 @@ const AddTestimonail = ({ isOpen, onClose }) => {
 
     if(!formData.user_concern || !formData.user_name || !formData.rating) return toast.error('All fields are required');
 
-    if(formData.user_name.length <12) return toast.error("Testimonial validation failed: user_concern: Concern must be 12 char long")
+    if(formData.user_concern.length <12) return toast.error("Testimonial validation failed: user_concern: Concern must be 12 char long")
 
+    console.log('success1',success,msg,loading);
   
     try {
       await dispatch(handleDispatchAddTestimonail(formData));
-    
+      toast.success('Successfully added the testimonail');
+    console.log('success2',success,msg,loading);
+      
     } catch (error) {
       toast.error(error);
       return;
     }
 
-    setFormData({user_name:'',user_concern:'',rating:0});
+    console.log('success',success,msg,loading);
+
+    setFormData({user_name:'',user_concern:'',rating:3});
 
   };
 
